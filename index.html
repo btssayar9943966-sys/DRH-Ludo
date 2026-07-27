@@ -1,84 +1,106 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>DRH LUDO</title>
+  <title>DRH LUDO</title>
 
-<style>
-body{
-  text-align:center;
-  font-family:Arial;
-  background:#222;
-  color:white;
-}
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background: #222;
+      color: white;
+    }
 
-h1{
-  color:#ffd700;
-}
+    h1 {
+      color: #ffd700;
+    }
 
-.dice{
-  font-size:80px;
-  display:inline-block;
-}
+    .dice {
+      font-size: 100px;
+      display: inline-block;
+    }
 
-.roll{
-  animation:rotate 0.7s;
-}
+    .roll {
+      animation: rotateDice 0.7s;
+    }
 
-@keyframes rotate{
-  0%{transform:rotate(0deg);}
-  50%{transform:rotate(180deg);}
-  100%{transform:rotate(360deg);}
-}
+    @keyframes rotateDice {
+      0% {
+        transform: rotate(0deg);
+      }
 
-button{
-  padding:15px 30px;
-  font-size:20px;
-  border-radius:10px;
-  cursor:pointer;
-}
+      25% {
+        transform: rotate(90deg);
+      }
 
-#number{
-  font-size:30px;
-  color:#00ff00;
-}
-</style>
+      50% {
+        transform: rotate(180deg);
+      }
 
+      75% {
+        transform: rotate(270deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 20px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    #number {
+      font-size: 30px;
+      color: #00ff00;
+    }
+  </style>
 </head>
 
 <body>
 
-<h1>🎲 DRH LUDO</h1>
+  <h1>🎲 DRH LUDO</h1>
 
-<div id="dice" class="dice">🎲</div>
+  <div id="dice" class="dice">⚀</div>
 
-<br><br>
+  <br><br>
 
-<button onclick="rollDice()">Roll Dice</button>
+  <button onclick="rollDice()">Roll Dice</button>
 
-<h2>Dice: <span id="number">-</span></h2>
+  <h2>
+    Dice: <span id="number">-</span>
+  </h2>
 
+  <script>
 
-<script>
+    function rollDice() {
 
-function rollDice(){
+      let dice = document.getElementById("dice");
+      let number = document.getElementById("number");
 
-let dice=document.getElementById("dice");
+      // Animation restart
+      dice.classList.remove("roll");
+      void dice.offsetWidth;
+      dice.classList.add("roll");
 
-dice.classList.remove("roll");
+      // Random number 1 to 6
+      let value = Math.floor(Math.random() * 6) + 1;
 
-void dice.offsetWidth;
+      // Dice picture according to number
+      let diceFaces = ["⚀", "⚁", "⚂", "⚃", "⚄", "⚅"];
 
-dice.classList.add("roll");
+      // Show number
+      number.innerHTML = value;
 
+      // Show matching dice face
+      dice.innerHTML = diceFaces[value - 1];
 
-let value=Math.floor(Math.random()*6)+1;
+    }
 
-document.getElementById("number").innerHTML=value;
-
-}
-
-</script>
-
+  </script>
 
 </body>
 </html>
