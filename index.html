@@ -1,22 +1,84 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
 <title>DRH LUDO</title>
+
+<style>
+body{
+  text-align:center;
+  font-family:Arial;
+  background:#222;
+  color:white;
+}
+
+h1{
+  color:#ffd700;
+}
+
+.dice{
+  font-size:80px;
+  display:inline-block;
+}
+
+.roll{
+  animation:rotate 0.7s;
+}
+
+@keyframes rotate{
+  0%{transform:rotate(0deg);}
+  50%{transform:rotate(180deg);}
+  100%{transform:rotate(360deg);}
+}
+
+button{
+  padding:15px 30px;
+  font-size:20px;
+  border-radius:10px;
+  cursor:pointer;
+}
+
+#number{
+  font-size:30px;
+  color:#00ff00;
+}
+</style>
+
 </head>
+
 <body>
+
 <h1>🎲 DRH LUDO</h1>
+
+<div id="dice" class="dice">🎲</div>
+
+<br><br>
 
 <button onclick="rollDice()">Roll Dice</button>
 
-<p id="dice">Dice: -</p>
+<h2>Dice: <span id="number">-</span></h2>
+
 
 <script>
-function rollDice() {
-  let dice = Math.floor(Math.random() * 6) + 1;
-  document.getElementById("dice").innerText = "Dice: " + dice;
+
+function rollDice(){
+
+let dice=document.getElementById("dice");
+
+dice.classList.remove("roll");
+
+void dice.offsetWidth;
+
+dice.classList.add("roll");
+
+
+let value=Math.floor(Math.random()*6)+1;
+
+document.getElementById("number").innerHTML=value;
+
 }
+
 </script>
+
 
 </body>
 </html>
