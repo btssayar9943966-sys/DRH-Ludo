@@ -1,200 +1,755 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DRH LUDO</title>
 
-  <title>DRH LUDO</title>
+<style>
+*{box-sizing:border-box}
 
-  <style>
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: Arial, sans-serif;
-      background: #222;
-      color: white;
-    }
+body{
+  margin:0;
+  padding:15px;
+  font-family:Arial,sans-serif;
+  background:#181818;
+  color:white;
+  text-align:center;
+}
 
-    .game {
-      text-align: center;
-    }
+h1{
+  margin:5px 0 10px;
+  color:#ffd700;
+}
 
-    h1 {
-      color: #ffd700;
-      font-size: 36px;
-    }
+.info{
+  margin:8px auto;
+  font-size:18px;
+}
 
-    /* Dice */
-    .dice {
-      width: 110px;
-      height: 110px;
-      margin: 20px auto;
-      background: white;
-      border-radius: 18px;
-      padding: 12px;
-      box-sizing: border-box;
+#status{
+  min-height:25px;
+  color:#00ff88;
+  font-weight:bold;
+}
 
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      grid-template-rows: repeat(3, 1fr);
+.board{
+  width:min(94vw,600px);
+  aspect-ratio:1;
+  margin:15px auto;
+  display:grid;
+  grid-template-columns:repeat(15,1fr);
+  grid-template-rows:repeat(15,1fr);
+  background:white;
+  border:4px solid #111;
+}
 
-      gap: 5px;
+.cell{
+  border:1px solid #999;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:visible;
+}
 
-      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-    }
+.redHome{background:#ef5350}
+.greenHome{background:#66bb6a}
+.yellowHome{background:#ffee58}
+.blueHome{background:#42a5f5}
 
-    .dot {
-      width: 22px;
-      height: 22px;
-      background: #111;
-      border-radius: 50%;
-      align-self: center;
-      justify-self: center;
-    }
+.path{
+  background:#fff;
+}
 
-    /* Dice घूमने की animation */
-    .rolling {
-      animation: diceRoll 0.8s ease-in-out;
-    }
+.safe{
+  background:#ddd;
+}
 
-    @keyframes diceRoll {
-      0% {
-        transform: rotate(0deg) scale(1);
-      }
+.center{
+  background:linear-gradient(
+    45deg,
+    #ef5350 0 25%,
+    #66bb6a 25% 50%,
+    #ffee58 50% 75%,
+    #42a5f5 75%
+  );
+}
 
-      25% {
-        transform: rotate(90deg) scale(1.1);
-      }
+.start-red{background:#ff7777}
+.start-green{background:#88dd88}
+.start-yellow{background:#fff59d}
+.start-blue{background:#80cfff}
 
-      50% {
-        transform: rotate(180deg) scale(1.15);
-      }
+.dice{
+  width:90px;
+  height:90px;
+  margin:10px auto;
+  background:white;
+  border-radius:16px;
+  padding:10px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  grid-template-rows:repeat(3,1fr);
+  gap:3px;
+  box-shadow:0 5px 15px #000;
+}
 
-      75% {
-        transform: rotate(270deg) scale(1.1);
-      }
+.dot{
+  width:18px;
+  height:18px;
+  background:#111;
+  border-radius:50%;
+  align-self:center;
+  justify-self:center;
+}
 
-      100% {
-        transform: rotate(360deg) scale(1);
-      }
-    }
+.rolling{
+  animation:diceRoll .7s ease-in-out;
+}
 
-    button {
-      background: #ff9800;
-      color: white;
-      border: none;
-      padding: 15px 35px;
-      font-size: 20px;
-      font-weight: bold;
-      border-radius: 12px;
-      cursor: pointer;
-    }
+@keyframes diceRoll{
+  0%{transform:rotate(0) scale(1)}
+  25%{transform:rotate(90deg) scale(1.1)}
+  50%{transform:rotate(180deg) scale(1.15)}
+  75%{transform:rotate(270deg) scale(1.1)}
+  100%{transform:rotate(360deg) scale(1)}
+}
 
-    button:active {
-      transform: scale(0.95);
-    }
+button{
+  border:0;
+  border-radius:10px;
+  padding:12px 25px;
+  margin:5px;
+  font-size:17px;
+  font-weight:bold;
+  cursor:pointer;
+}
 
-    #number {
-      color: #00ff00;
-      font-size: 32px;
-    }
-  </style>
+#rollBtn{
+  background:#ff9800;
+  color:white;
+}
+
+.token{
+  width:70%;
+  height:70%;
+  border-radius:50%;
+  border:3px solid white;
+  box-shadow:0 2px 5px #333;
+  cursor:pointer;
+  z-index:5;
+}
+
+.token.red{background:#d50000}
+.token.green{background:#00a000}
+.token.yellow{background:#f5c400}
+.token.blue{background:#0066dd}
+
+.selected{
+  animation:pulse .6s infinite alternate;
+}
+
+@keyframes pulse{
+  from{transform:scale(.85)}
+  to{transform:scale(1.15)}
+}
+
+.legend{
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin:10px;
+  font-size:14px;
+}
+
+.legend span{
+  padding:5px 9px;
+  border-radius:6px;
+  color:#111;
+  font-weight:bold;
+}
+
+.lred{background:#ef5350}
+.lgreen{background:#66bb6a}
+.lyellow{background:#ffee58}
+.lblue{background:#42a5f5}
+
+@media(max-width:400px){
+  .dice{
+    width:75px;
+    height:75px;
+  }
+
+  .dot{
+    width:14px;
+    height:14px;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <div class="game">
+<h1>🎲 DRH LUDO</h1>
 
-    <h1>🎲 DRH LUDO</h1>
+<div class="legend">
+  <span class="lred">YOU - RED</span>
+  <span class="lgreen">COMPUTER - GREEN</span>
+  <span class="lyellow">YELLOW</span>
+  <span class="lblue">BLUE</span>
+</div>
 
-    <div id="dice" class="dice">
-      <div class="dot"></div>
-    </div>
+<div class="info">
+  Turn: <b id="turnText">You</b>
+</div>
 
-    <button onclick="rollDice()">Roll Dice</button>
+<div id="status">
+  Roll the dice to start!
+</div>
 
-    <h2>
-      Dice: <span id="number">-</span>
-    </h2>
+<div id="dice" class="dice">
+  <div class="dot"></div>
+</div>
 
-  </div>
+<div>
+  Dice: <b id="number">-</b>
+</div>
+
+<button id="rollBtn" onclick="rollDice()">Roll Dice</button>
+
+<div id="board" class="board"></div>
+
+<script>
+
+const board = document.getElementById("board");
+const dice = document.getElementById("dice");
+const numberText = document.getElementById("number");
+const statusText = document.getElementById("status");
+const turnText = document.getElementById("turnText");
+const rollBtn = document.getElementById("rollBtn");
+
+/* 15 x 15 Board */
+
+const path = [
+  [6,1],[6,2],[6,3],[6,4],[6,5],
+  [5,6],[4,6],[3,6],[2,6],[1,6],
+  [0,6],[0,7],[0,8],
+  [1,8],[2,8],[3,8],[4,8],[5,8],
+  [6,9],[6,10],[6,11],[6,12],[6,13],[6,14],
+  [7,14],[8,14],
+  [8,13],[8,12],[8,11],[8,10],[8,9],
+  [9,8],[10,8],[11,8],[12,8],[13,8],
+  [14,8],[14,7],[14,6],
+  [13,6],[12,6],[11,6],[10,6],[9,6],
+  [8,5],[8,4],[8,3],[8,2],[8,1],[8,0],
+  [7,0],[6,0]
+];
+
+const safeIndexes = [0,8,13,21,26,34,39,47];
+
+const colors = ["red","green","yellow","blue"];
+
+const homePositions = {
+  red:[[1,1],[1,3],[3,1],[3,3]],
+  green:[[1,11],[1,13],[3,11],[3,13]],
+  yellow:[[11,1],[11,3],[13,1],[13,3]],
+  blue:[[11,11],[11,13],[13,11],[13,13]]
+};
+
+const startIndex = {
+  red:0,
+  green:13,
+  yellow:26,
+  blue:39
+};
+
+let tokens = {
+  red:[-1,-1,-1,-1],
+  green:[-1,-1,-1,-1],
+  yellow:[-1,-1,-1,-1],
+  blue:[-1,-1,-1,-1]
+};
+
+let currentTurn = "red";
+let diceValue = 0;
+let gameOver = false;
 
 
-  <script>
+/* Create Board */
 
-    const dice = document.getElementById("dice");
-    const number = document.getElementById("number");
+function createBoard(){
 
-    function showDice(value) {
+  board.innerHTML="";
 
-      dice.innerHTML = "";
+  for(let r=0;r<15;r++){
 
-      // Dice पर dots की positions
-      const positions = {
+    for(let c=0;c<15;c++){
 
-        1: [5],
+      const cell=document.createElement("div");
 
-        2: [1, 9],
+      cell.className="cell";
 
-        3: [1, 5, 9],
+      /* Home areas */
 
-        4: [1, 3, 7, 9],
+      if(r<6 && c<6) cell.classList.add("redHome");
+      else if(r<6 && c>8) cell.classList.add("greenHome");
+      else if(r>8 && c<6) cell.classList.add("yellowHome");
+      else if(r>8 && c>8) cell.classList.add("blueHome");
 
-        5: [1, 3, 5, 7, 9],
+      /* Main path */
 
-        6: [1, 3, 4, 6, 7, 9]
+      let pathIndex=path.findIndex(p=>p[0]===r && p[1]===c);
 
-      };
+      if(pathIndex>=0){
 
-      positions[value].forEach(position => {
+        cell.classList.remove(
+          "redHome",
+          "greenHome",
+          "yellowHome",
+          "blueHome"
+        );
 
-        const dot = document.createElement("div");
+        cell.classList.add("path");
 
-        dot.className = "dot";
+        if(safeIndexes.includes(pathIndex)){
+          cell.classList.add("safe");
+        }
 
-        dot.style.gridArea =
-          Math.ceil(position / 3) + " / " +
-          ((position - 1) % 3 + 1);
+        if(pathIndex===0) cell.classList.add("start-red");
+        if(pathIndex===13) cell.classList.add("start-green");
+        if(pathIndex===26) cell.classList.add("start-yellow");
+        if(pathIndex===39) cell.classList.add("start-blue");
 
-        dice.appendChild(dot);
+      }
 
-      });
+      /* Center */
+
+      if(r>=6 && r<=8 && c>=6 && c<=8){
+        cell.className="cell center";
+      }
+
+      cell.id="cell-"+r+"-"+c;
+
+      board.appendChild(cell);
+    }
+  }
+
+  renderTokens();
+}
+
+
+/* Render Tokens */
+
+function renderTokens(){
+
+  document.querySelectorAll(".token").forEach(t=>t.remove());
+
+  colors.forEach(color=>{
+
+    tokens[color].forEach((position,index)=>{
+
+      let cell;
+
+      if(position===-1){
+
+        const hp=homePositions[color][index];
+
+        cell=document.getElementById(
+          "cell-"+hp[0]+"-"+hp[1]
+        );
+
+      }else{
+
+        let globalIndex =
+          (startIndex[color]+position)%52;
+
+        const p=path[globalIndex];
+
+        cell=document.getElementById(
+          "cell-"+p[0]+"-"+p[1]
+        );
+      }
+
+      if(cell){
+
+        const token=document.createElement("div");
+
+        token.className="token "+color;
+
+        token.dataset.color=color;
+        token.dataset.index=index;
+
+        if(color==="red" && currentTurn==="red"){
+          token.onclick=()=>selectToken(index);
+        }
+
+        cell.appendChild(token);
+      }
+
+    });
+
+  });
+
+}
+
+
+/* Roll Dice */
+
+function rollDice(){
+
+  if(gameOver) return;
+
+  if(currentTurn!=="red"){
+    statusText.innerText="Wait for Computer...";
+    return;
+  }
+
+  rollBtn.disabled=true;
+
+  dice.classList.remove("rolling");
+  void dice.offsetWidth;
+  dice.classList.add("rolling");
+
+  diceValue=Math.floor(Math.random()*6)+1;
+
+  numberText.innerText=diceValue;
+
+  setTimeout(()=>{
+
+    showDice(diceValue);
+
+    statusText.innerText=
+      diceValue===6
+      ? "You got 6! Select a red token."
+      : "Select a red token to move.";
+
+    highlightTokens();
+
+  },700);
+
+}
+
+
+/* Dice Face */
+
+function showDice(value){
+
+  dice.innerHTML="";
+
+  const positions={
+    1:[5],
+    2:[1,9],
+    3:[1,5,9],
+    4:[1,3,7,9],
+    5:[1,3,5,7,9],
+    6:[1,3,4,6,7,9]
+  };
+
+  positions[value].forEach(position=>{
+
+    const dot=document.createElement("div");
+
+    dot.className="dot";
+
+    dot.style.gridArea=
+      Math.ceil(position/3)+"/"+
+      ((position-1)%3+1);
+
+    dice.appendChild(dot);
+
+  });
+
+}
+
+
+/* Highlight Possible Tokens */
+
+function highlightTokens(){
+
+  document.querySelectorAll(".token").forEach(t=>{
+    t.classList.remove("selected");
+  });
+
+  tokens.red.forEach((pos,index)=>{
+
+    if(canMove("red",index)){
+
+      const all=
+        document.querySelectorAll(
+          '.token.red'
+        );
+
+      if(all[index]){
+        all[index].classList.add("selected");
+      }
 
     }
 
+  });
 
-    function rollDice() {
-
-      // Animation शुरू
-      dice.classList.remove("rolling");
-
-      // Animation restart
-      void dice.offsetWidth;
-
-      dice.classList.add("rolling");
+}
 
 
-      // Random number 1 से 6
-      const value = Math.floor(Math.random() * 6) + 1;
+/* Select Token */
+
+function selectToken(index){
+
+  if(currentTurn!=="red") return;
+
+  if(!canMove("red",index)){
+
+    statusText.innerText=
+      diceValue===6
+      ? "This token cannot move."
+      : "You need a 6 to leave Home.";
+
+    return;
+  }
+
+  moveToken("red",index,diceValue);
+
+}
 
 
-      // Number दिखाएँ
-      number.innerText = value;
+/* Can Move */
+
+function canMove(color,index){
+
+  const pos=tokens[color][index];
+
+  if(pos===56) return false;
+
+  if(pos===-1){
+
+    return diceValue===6;
+
+  }
+
+  return pos+diceValue<=56;
+}
 
 
-      // 0.8 सेकंड बाद सही dice face दिखाएँ
-      setTimeout(() => {
+/* Move Token */
 
-        showDice(value);
+function moveToken(color,index,steps){
 
-      }, 800);
+  let pos=tokens[color][index];
+
+  if(pos===-1){
+
+    pos=0;
+
+  }else{
+
+    pos+=steps;
+
+  }
+
+  tokens[color][index]=pos;
+
+  capture(color,index);
+
+  renderTokens();
+
+  if(checkWin(color)){
+
+    gameOver=true;
+
+    statusText.innerText=
+      color==="red"
+      ? "🏆 You Win!"
+      : "🤖 Computer Wins!";
+
+    return;
+  }
+
+  if(steps===6){
+
+    statusText.innerText=
+      color==="red"
+      ? "You got 6! Roll again."
+      : "Computer got 6!";
+
+    if(color==="red"){
+
+      currentTurn="red";
+      turnText.innerText="You";
+      rollBtn.disabled=false;
 
     }
 
-  </script>
+    return;
+
+  }
+
+  if(color==="red"){
+
+    currentTurn="green";
+
+    turnText.innerText="Computer";
+
+    statusText.innerText=
+      "Computer is thinking...";
+
+    setTimeout(computerTurn,1000);
+
+  }else{
+
+    currentTurn="red";
+
+    turnText.innerText="You";
+
+    statusText.innerText=
+      "Your turn. Roll the dice!";
+
+    rollBtn.disabled=false;
+
+  }
+
+}
+
+
+/* Capture */
+
+function capture(color,index){
+
+  if(tokens[color][index]===-1) return;
+
+  const position=
+    (startIndex[color]+tokens[color][index])%52;
+
+  if(safeIndexes.includes(position)) return;
+
+  colors.forEach(other=>{
+
+    if(other===color) return;
+
+    tokens[other].forEach((pos,i)=>{
+
+      if(pos===-1) return;
+
+      const otherPosition=
+        (startIndex[other]+pos)%52;
+
+      if(otherPosition===position){
+
+        tokens[other][i]=-1;
+
+      }
+
+    });
+
+  });
+
+}
+
+
+/* Win Check */
+
+function checkWin(color){
+
+  return tokens[color].every(
+    p=>p===56
+  );
+
+}
+
+
+/* Computer */
+
+function computerTurn(){
+
+  if(gameOver) return;
+
+  currentTurn="green";
+
+  diceValue=
+    Math.floor(Math.random()*6)+1;
+
+  numberText.innerText=diceValue;
+
+  showDice(diceValue);
+
+  statusText.innerText=
+    "Computer rolled "+diceValue;
+
+  let movable=[];
+
+  tokens.green.forEach((pos,index)=>{
+
+    if(canMove("green",index)){
+      movable.push(index);
+    }
+
+  });
+
+  if(movable.length===0){
+
+    if(diceValue===6){
+
+      setTimeout(()=>{
+
+        currentTurn="red";
+
+        turnText.innerText="You";
+
+        statusText.innerText=
+          "Computer cannot move. You got another turn!";
+
+        rollBtn.disabled=false;
+
+      },700);
+
+    }else{
+
+      setTimeout(()=>{
+
+        currentTurn="red";
+
+        turnText.innerText="You";
+
+        statusText.innerText=
+          "Your turn. Roll the dice!";
+
+        rollBtn.disabled=false;
+
+      },700);
+
+    }
+
+    return;
+
+  }
+
+  const selected=
+    movable[
+      Math.floor(
+        Math.random()*movable.length
+      )
+    ];
+
+  setTimeout(()=>{
+
+    moveToken(
+      "green",
+      selected,
+      diceValue
+    );
+
+  },700);
+
+}
+
+
+/* Start Game */
+
+createBoard();
+
+showDice(1);
+
+</script>
 
 </body>
 </html>
