@@ -1,54 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>DRH LUDO</title>
 
 <style>
 *{box-sizing:border-box}
+
 body{
  margin:0;
- padding:12px;
- background:#171717;
- color:#fff;
+ background:#151515;
+ color:white;
  font-family:Arial,sans-serif;
- text-align:center
+ text-align:center;
+ padding:10px;
 }
-h1{color:#ffd700;margin:5px}
-#status{min-height:24px;color:#00ff88;font-weight:bold}
+
+h1{
+ margin:5px;
+ color:#ffd700;
+}
+
+#status{
+ min-height:25px;
+ font-weight:bold;
+ margin:5px;
+}
+
+#turn{
+ font-size:18px;
+ margin:5px;
+}
+
+.game{
+ width:min(96vw,620px);
+ margin:auto;
+}
 
 .board{
- width:min(96vw,600px);
+ width:100%;
  aspect-ratio:1;
- margin:15px auto;
  display:grid;
  grid-template-columns:repeat(15,1fr);
  grid-template-rows:repeat(15,1fr);
+ background:#222;
  border:5px solid #111;
- background:#fff;
+ border-radius:8px;
+ overflow:hidden;
 }
+
+/* BASIC CELL */
 
 .cell{
  position:relative;
- border:1px solid #777;
  display:flex;
  align-items:center;
  justify-content:center;
+ border:1px solid #777;
 }
 
-/* FOUR HOMES */
+/* HOMES */
 
-.redHome{background:#ef5350}
-.greenHome{background:#66bb6a}
-.yellowHome{background:#ffee58}
-.blueHome{background:#42a5f5}
+.red-home{background:#e53935}
+.green-home{background:#43a047}
+.yellow-home{background:#fdd835}
+.blue-home{background:#1e88e5}
 
 /* HOME INNER */
 
-.homeInner{
- width:82%;
- height:82%;
+.home-box{
+ width:84%;
+ height:84%;
  background:white;
  border:3px solid #222;
  border-radius:12px;
@@ -59,93 +82,105 @@ h1{color:#ffd700;margin:5px}
  padding:6px;
 }
 
-.redHome .homeInner{background:#ffb0b0}
-.greenHome .homeInner{background:#b8f0b8}
-.yellowHome .homeInner{background:#fff9a8}
-.blueHome .homeInner{background:#a9dcff}
+.red-home .home-box{background:#ffb3b0}
+.green-home .home-box{background:#b9efbc}
+.yellow-home .home-box{background:#fff5a8}
+.blue-home .home-box{background:#a9d8ff}
 
-/* PATH COLORS */
+/* PATH */
 
-.redPath{background:#ff8a8a}
-.greenPath{background:#91df91}
-.yellowPath{background:#fff58a}
-.bluePath{background:#8bcfff}
-
-.commonPath{background:#fff}
-
-/* START CELLS */
-
-.redStart{background:#e00000!important}
-.greenStart{background:#00a000!important}
-.yellowStart{background:#e0b800!important}
-.blueStart{background:#0066dd!important}
-
-/* SAFE */
-
-.safe:after{
- content:"★";
- color:#333;
- font-size:14px;
- position:absolute;
+.path{
+ background:#fff;
 }
+
+.red-path{background:#ff8a8a}
+.green-path{background:#8dde91}
+.yellow-path{background:#fff184}
+.blue-path{background:#83c8ff}
+
+/* HOME LANES */
+
+.red-lane{background:#e53935!important}
+.green-lane{background:#43a047!important}
+.yellow-lane{background:#fdd835!important}
+.blue-lane{background:#1e88e5!important}
+
+/* START */
+
+.red-start{background:#d50000!important}
+.green-start{background:#008c20!important}
+.yellow-start{background:#d4a900!important}
+.blue-start{background:#005bbb!important}
 
 /* CENTER */
 
 .center{
- background:
- linear-gradient(45deg,
- #e00000 0 25%,
- #00a000 25% 50%,
- #e0b800 50% 75%,
- #0066dd 75%);
+ background:conic-gradient(
+  #43a047 0 25%,
+  #1e88e5 25% 50%,
+  #fdd835 50% 75%,
+  #e53935 75% 100%
+ );
 }
 
-/* TOKENS */
+/* SAFE */
+
+.safe::after{
+ content:"★";
+ color:#222;
+ font-size:14px;
+}
+
+/* TOKEN */
 
 .token{
- width:72%;
- height:72%;
+ width:75%;
+ height:75%;
  border-radius:50%;
  border:3px solid white;
  box-shadow:
  0 3px 5px #222,
- inset 0 2px 3px rgba(255,255,255,.6);
- z-index:10;
- cursor:pointer;
+ inset 0 2px 4px rgba(255,255,255,.7);
+ z-index:5;
 }
 
-.token.red{background:#d00000}
-.token.green{background:#008f00}
-.token.yellow{background:#e5b900}
-.token.blue{background:#005dcc}
+.red-token{background:#b40000}
+.green-token{background:#087f23}
+.yellow-token{background:#d6a900}
+.blue-token{background:#0057b8}
 
 .selectable{
  animation:pulse .6s infinite alternate;
+ cursor:pointer;
 }
 
 @keyframes pulse{
- from{transform:scale(.82)}
+ from{transform:scale(.8)}
  to{transform:scale(1.12)}
 }
 
 /* DICE */
 
-.dice{
- width:85px;
- height:85px;
+.dice-area{
  margin:8px auto;
+}
+
+.dice{
+ width:78px;
+ height:78px;
+ margin:auto;
  background:white;
- border-radius:15px;
- padding:10px;
+ border-radius:14px;
  display:grid;
  grid-template-columns:repeat(3,1fr);
  grid-template-rows:repeat(3,1fr);
+ padding:10px;
  box-shadow:0 5px 15px #000;
 }
 
 .dot{
- width:17px;
- height:17px;
+ width:16px;
+ height:16px;
  background:#111;
  border-radius:50%;
  align-self:center;
@@ -153,113 +188,187 @@ h1{color:#ffd700;margin:5px}
 }
 
 .rolling{
- animation:roll .7s ease-in-out;
+ animation:rotateDice .7s ease-in-out;
 }
 
-@keyframes roll{
- 0%{transform:rotate(0) scale(1)}
- 25%{transform:rotate(90deg) scale(1.1)}
- 50%{transform:rotate(180deg) scale(1.15)}
- 75%{transform:rotate(270deg) scale(1.1)}
+@keyframes rotateDice{
+ 0%{transform:rotate(0deg) scale(1)}
+ 25%{transform:rotate(90deg) scale(1.15)}
+ 50%{transform:rotate(180deg) scale(1.2)}
+ 75%{transform:rotate(270deg) scale(1.15)}
  100%{transform:rotate(360deg) scale(1)}
 }
 
 button{
- padding:12px 25px;
- margin:5px;
  border:0;
+ padding:12px 28px;
  border-radius:10px;
  background:#ff9800;
- color:#fff;
+ color:white;
  font-size:17px;
  font-weight:bold;
+ margin:6px;
  cursor:pointer;
 }
-button:disabled{opacity:.5}
+
+button:disabled{
+ opacity:.5;
+ cursor:not-allowed;
+}
+
+.info{
+ font-size:14px;
+ margin:5px;
+}
 </style>
 </head>
 
 <body>
 
+<div class="game">
+
 <h1>🎲 DRH LUDO</h1>
 
-<div>Turn: <b id="turn">You 🔴</b></div>
-<div id="status">Roll the dice to start!</div>
+<div id="turn">आपकी बारी 🔴</div>
+<div id="status">Dice Roll करें</div>
 
-<div id="dice" class="dice"></div>
+<div class="dice-area">
+ <div id="dice" class="dice"></div>
+ <div>Dice: <b id="diceNumber">-</b></div>
+</div>
 
-<div>Dice: <b id="number">-</b></div>
-
-<button id="rollBtn" onclick="rollDice()">Roll Dice</button>
+<button id="rollButton" onclick="rollDice()">🎲 Roll Dice</button>
 
 <div id="board" class="board"></div>
 
+<div class="info">
+🔴 You &nbsp; 🤖 Computer 🟢
+</div>
+
+</div>
+
 <script>
 
-/* 52 COMMON PATH CELLS */
+/* =====================================================
+   REAL LUDO 52 CELL COMMON PATH
+===================================================== */
 
-const path=[
-[6,1],[6,2],[6,3],[6,4],[6,5],
-[5,6],[4,6],[3,6],[2,6],[1,6],[0,6],
-[0,7],[0,8],
-[1,8],[2,8],[3,8],[4,8],[5,8],
-[6,9],[6,10],[6,11],[6,12],[6,13],[6,14],
-[7,14],[8,14],
-[8,13],[8,12],[8,11],[8,10],[8,9],
-[9,8],[10,8],[11,8],[12,8],[13,8],[14,8],
-[14,7],[14,6],
-[13,6],[12,6],[11,6],[10,6],[9,6],
-[8,5],[8,4],[8,3],[8,2],[8,1],[8,0],
-[7,0],[6,0]
+const path = [
+
+ [6,1],[6,2],[6,3],[6,4],[6,5],
+ [5,6],[4,6],[3,6],[2,6],[1,6],
+ [0,6],[0,7],[0,8],
+ [1,8],[2,8],[3,8],[4,8],[5,8],
+ [6,9],[6,10],[6,11],[6,12],[6,13],[6,14],
+ [7,14],[8,14],
+ [8,13],[8,12],[8,11],[8,10],[8,9],
+ [9,8],[10,8],[11,8],[12,8],[13,8],[14,8],
+ [14,7],[14,6],
+ [13,6],[12,6],[11,6],[10,6],[9,6],
+ [8,5],[8,4],[8,3],[8,2],[8,1],[8,0],
+ [7,0],[6,0]
+
 ];
 
-/* HOME POSITIONS - 4 TOKENS 2x2 */
+/* =====================================================
+   HOME LANES
+===================================================== */
 
-const home={
- red:[[1,1],[1,3],[3,1],[3,3]],
- green:[[1,11],[1,13],[3,11],[3,13]],
- yellow:[[11,1],[11,3],[13,1],[13,3]],
- blue:[[11,11],[11,13],[13,11],[13,13]]
+const lanes = {
+
+ red:[
+  [7,1],[7,2],[7,3],[7,4],[7,5]
+ ],
+
+ green:[
+  [1,7],[2,7],[3,7],[4,7],[5,7]
+ ],
+
+ yellow:[
+  [7,13],[7,12],[7,11],[7,10],[7,9]
+ ],
+
+ blue:[
+  [13,7],[12,7],[11,7],[10,7],[9,7]
+ ]
+
 };
 
-/* START POSITIONS */
+/* =====================================================
+   HOME POSITIONS 2x2
+===================================================== */
 
-const start={
+const homePositions={
+
+ red:[
+  [1,1],[1,3],[3,1],[3,3]
+ ],
+
+ green:[
+  [1,11],[1,13],[3,11],[3,13]
+ ],
+
+ yellow:[
+  [11,1],[11,3],[13,1],[13,3]
+ ],
+
+ blue:[
+  [11,11],[11,13],[13,11],[13,13]
+ ]
+
+};
+
+/* =====================================================
+   PLAYER START INDEX
+===================================================== */
+
+const startIndex={
  red:0,
  green:13,
  yellow:26,
  blue:39
 };
 
-/* COLOR SECTIONS */
+/* =====================================================
+   SAFE CELLS
+===================================================== */
 
-function pathColor(i){
+const safeCells=[
+ 0,8,13,21,26,34,39,47
+];
 
- if(i>=0 && i<=12)return "redPath";
- if(i>=13 && i<=25)return "greenPath";
- if(i>=26 && i<=38)return "yellowPath";
- return "bluePath";
-}
+/* =====================================================
+   GAME DATA
+===================================================== */
 
-/* SAFE CELLS */
+/*
+ -1 = Home
+ 0-51 = Common Path
+ 52-56 = Home Lane / Finish
+ 56 = Finished
+*/
 
-const safe=[0,8,13,21,26,34,39,47];
+let players={
+ red:{
+  name:"You",
+  tokens:[-1,-1,-1,-1]
+ },
 
-const colors=["red","green","yellow","blue"];
-
-let tokens={
- red:[-1,-1,-1,-1],
- green:[-1,-1,-1,-1],
- yellow:[-1,-1,-1,-1],
- blue:[-1,-1,-1,-1]
+ green:{
+  name:"Computer",
+  tokens:[-1,-1,-1,-1]
+ }
 };
 
-let turn="red";
-let dice=0;
+let currentPlayer="red";
+let diceValue=0;
+let rolling=false;
 let gameOver=false;
 
 
-/* CREATE BOARD */
+/* =====================================================
+   CREATE BOARD
+===================================================== */
 
 function createBoard(){
 
@@ -275,56 +384,95 @@ function createBoard(){
 
    cell.className="cell";
 
-   /* HOME AREAS */
+   /*
+   HOME AREAS
+   */
 
    if(r<6 && c<6){
-    cell.classList.add("redHome");
+    cell.classList.add("red-home");
    }
 
    else if(r<6 && c>8){
-    cell.classList.add("greenHome");
+    cell.classList.add("green-home");
    }
 
    else if(r>8 && c<6){
-    cell.classList.add("yellowHome");
+    cell.classList.add("yellow-home");
    }
 
    else if(r>8 && c>8){
-    cell.classList.add("blueHome");
+    cell.classList.add("blue-home");
    }
 
-   /* COMMON PATH */
+   /*
+   COMMON PATH
+   */
 
    const index=path.findIndex(
     p=>p[0]===r && p[1]===c
    );
 
-   if(index>=0){
+   if(index!==-1){
 
-    cell.className="cell";
+    cell.className="cell path";
 
-    cell.classList.add(pathColor(index));
+    if(index<13)
+     cell.classList.add("red-path");
 
-    if(safe.includes(index)){
-     cell.classList.add("safe");
-    }
+    else if(index<26)
+     cell.classList.add("green-path");
+
+    else if(index<39)
+     cell.classList.add("yellow-path");
+
+    else
+     cell.classList.add("blue-path");
 
     if(index===0)
-     cell.classList.add("redStart");
+     cell.classList.add("red-start");
 
     if(index===13)
-     cell.classList.add("greenStart");
+     cell.classList.add("green-start");
 
     if(index===26)
-     cell.classList.add("yellowStart");
+     cell.classList.add("yellow-start");
 
     if(index===39)
-     cell.classList.add("blueStart");
+     cell.classList.add("blue-start");
+
+    if(safeCells.includes(index))
+     cell.classList.add("safe");
    }
 
-   /* CENTER */
+   /*
+   HOME LANES
+   */
 
-   if(r>=6 && r<=8 && c>=6 && c<=8){
+   lanes.red.forEach(p=>{
+    if(p[0]===r&&p[1]===c)
+     cell.classList.add("red-lane");
+   });
+
+   lanes.green.forEach(p=>{
+    if(p[0]===r&&p[1]===c)
+     cell.classList.add("green-lane");
+   });
+
+   lanes.yellow.forEach(p=>{
+    if(p[0]===r&&p[1]===c)
+     cell.classList.add("yellow-lane");
+   });
+
+   lanes.blue.forEach(p=>{
+    if(p[0]===r&&p[1]===c)
+     cell.classList.add("blue-lane");
+   });
+
+   /*
+   CENTER
+   */
+
+   if(r>=6&&r<=8&&c>=6&&c<=8){
     cell.className="cell center";
    }
 
@@ -334,61 +482,115 @@ function createBoard(){
   }
  }
 
- render();
+ renderTokens();
 }
 
 
-/* RENDER TOKENS */
+/* =====================================================
+   GET TOKEN CELL
+===================================================== */
 
-function render(){
+function getTokenCell(color,position,index){
+
+ /*
+ HOME
+ */
+
+ if(position===-1){
+
+  const p=homePositions[color][index];
+
+  return document.getElementById(
+   `cell-${p[0]}-${p[1]}`
+  );
+ }
+
+ /*
+ FINISHED
+ */
+
+ if(position===56){
+
+  return null;
+ }
+
+ /*
+ HOME LANE
+ */
+
+ if(position>=52){
+
+  const laneIndex=position-52;
+
+  const p=lanes[color][laneIndex];
+
+  if(p){
+
+   return document.getElementById(
+    `cell-${p[0]}-${p[1]}`
+   );
+  }
+
+  return null;
+ }
+
+ /*
+ COMMON PATH
+ */
+
+ const globalIndex=
+  (startIndex[color]+position)%52;
+
+ const p=path[globalIndex];
+
+ return document.getElementById(
+  `cell-${p[0]}-${p[1]}`
+ );
+}
+
+
+/* =====================================================
+   RENDER TOKENS
+===================================================== */
+
+function renderTokens(){
 
  document.querySelectorAll(".token")
- .forEach(x=>x.remove());
+ .forEach(t=>t.remove());
 
- colors.forEach(color=>{
+ Object.keys(players).forEach(color=>{
 
-  tokens[color].forEach((pos,i)=>{
+  players[color].tokens.forEach((position,index)=>{
 
-   let cell;
+   const cell=
+    getTokenCell(color,position,index);
 
-   /* HOME */
+   if(!cell)return;
 
-   if(pos===-1){
+   const token=
+    document.createElement("div");
 
-    const p=home[color][i];
+   token.className=
+    `token ${color}-token`;
 
-    cell=document.getElementById(
-     `cell-${p[0]}-${p[1]}`
-    );
+   /*
+   Player token selectable
+   */
 
+   if(
+    color==="red" &&
+    currentPlayer==="red" &&
+    canMove(color,index)
+   ){
+
+    token.classList.add("selectable");
+
+    token.onclick=()=>{
+     moveToken(color,index);
+    };
    }
 
-   /* PATH */
-
-   else{
-
-    const index=
-     (start[color]+pos)%52;
-
-    const p=path[index];
-
-    cell=document.getElementById(
-     `cell-${p[0]}-${p[1]}`
-    );
-   }
-
-   if(cell){
-
-    const token=document.createElement("div");
-
-    token.className=`token ${color}`;
-
-    if(color==="red" && turn==="red"){
-     token.onclick=()=>selectToken(i);
-    }
-
-    cell.appendChild(token);
-   }
+   cell.appendChild(token);
 
   });
 
@@ -396,26 +598,480 @@ function render(){
 }
 
 
-/* DICE */
+/* =====================================================
+   CAN MOVE
+===================================================== */
 
-function showDice(n){
+function canMove(color,index){
 
- const d=document.getElementById("dice");
+ const position=
+  players[color].tokens[index];
 
- d.innerHTML="";
+ /*
+ Home token
+ */
 
- const map={
- 1:[5],
- 2:[1,9],
- 3:[1,5,9],
- 4:[1,3,7,9],
- 5:[1,3,5,7,9],
- 6:[1,3,4,6,7,9]
+ if(position===-1){
+
+  return diceValue===6;
+ }
+
+ /*
+ Already finished
+ */
+
+ if(position===56){
+
+  return false;
+ }
+
+ /*
+ Cannot exceed finish
+ */
+
+ return position+diceValue<=56;
+}
+
+
+/* =====================================================
+   ROLL DICE
+===================================================== */
+
+function rollDice(){
+
+ if(
+  rolling ||
+  gameOver ||
+  currentPlayer!=="red"
+ )return;
+
+ rolling=true;
+
+ document.getElementById("rollButton")
+ .disabled=true;
+
+ const dice=
+  document.getElementById("dice");
+
+ dice.classList.add("rolling");
+
+ /*
+ animation random numbers
+ */
+
+ let count=0;
+
+ const animation=
+  setInterval(()=>{
+
+   const random=
+    Math.floor(Math.random()*6)+1;
+
+   showDice(random);
+
+   count++;
+
+   if(count>=8){
+
+    clearInterval(animation);
+
+    diceValue=
+     Math.floor(Math.random()*6)+1;
+
+    showDice(diceValue);
+
+    document.getElementById("diceNumber")
+     .innerText=diceValue;
+
+    dice.classList.remove("rolling");
+
+    rolling=false;
+
+    afterRoll();
+   }
+
+  },90);
+}
+
+
+/* =====================================================
+   AFTER ROLL
+===================================================== */
+
+function afterRoll(){
+
+ const possible=[];
+
+ players.red.tokens.forEach(
+  (p,i)=>{
+
+   if(canMove("red",i))
+    possible.push(i);
+
+  }
+ );
+
+ if(possible.length===0){
+
+  document.getElementById("status")
+   .innerText=
+   diceValue===6
+   ?"6 आया लेकिन कोई गोटी नहीं चल सकती।"
+   :"कोई गोटी नहीं चल सकती।";
+
+  setTimeout(()=>{
+
+   if(diceValue===6){
+
+    document.getElementById("status")
+     .innerText=
+     "6 आया! फिर से Roll करें।";
+
+    document.getElementById("rollButton")
+     .disabled=false;
+
+   }else{
+
+    switchToComputer();
+
+   }
+
+  },700);
+
+  return;
+ }
+
+ document.getElementById("status")
+  .innerText=
+  "चमकती हुई गोटी पर क्लिक करें।";
+
+ renderTokens();
+}
+
+
+/* =====================================================
+   MOVE PLAYER TOKEN
+===================================================== */
+
+function moveToken(color,index){
+
+ if(!canMove(color,index))
+  return;
+
+ let position=
+  players[color].tokens[index];
+
+ /*
+ Bring out
+ */
+
+ if(position===-1){
+
+  position=0;
+
+ }else{
+
+  position+=diceValue;
+ }
+
+ players[color].tokens[index]=position;
+
+ checkCapture(color,index);
+
+ renderTokens();
+
+ if(checkWin(color)){
+
+  gameOver=true;
+
+  document.getElementById("status")
+   .innerText=
+   "🏆 आप जीत गए!";
+
+  return;
+ }
+
+ /*
+ Extra turn on 6
+ */
+
+ if(diceValue===6){
+
+  document.getElementById("status")
+   .innerText=
+   "🎉 6 आया! फिर से आपकी बारी।";
+
+  document.getElementById("rollButton")
+   .disabled=false;
+
+  return;
+ }
+
+ switchToComputer();
+}
+
+
+/* =====================================================
+   SWITCH TO COMPUTER
+===================================================== */
+
+function switchToComputer(){
+
+ currentPlayer="green";
+
+ document.getElementById("turn")
+  .innerText=
+  "Computer की बारी 🤖🟢";
+
+ document.getElementById("status")
+  .innerText=
+  "Computer Dice Roll कर रहा है...";
+
+ renderTokens();
+
+ setTimeout(computerRoll,1000);
+}
+
+
+/* =====================================================
+   COMPUTER ROLL
+===================================================== */
+
+function computerRoll(){
+
+ if(gameOver)return;
+
+ diceValue=
+  Math.floor(Math.random()*6)+1;
+
+ showDice(diceValue);
+
+ document.getElementById("diceNumber")
+  .innerText=diceValue;
+
+ document.getElementById("status")
+  .innerText=
+  "Computer ने "+diceValue+" roll किया।";
+
+ const possible=[];
+
+ players.green.tokens.forEach(
+  (p,i)=>{
+
+   if(canMove("green",i))
+    possible.push(i);
+
+  }
+ );
+
+ if(possible.length===0){
+
+  if(diceValue===6){
+
+   setTimeout(computerRoll,900);
+
+  }else{
+
+   setTimeout(switchToPlayer,900);
+
+  }
+
+  return;
+ }
+
+ /*
+ Computer chooses:
+ Prefer token that can finish,
+ otherwise random valid token
+ */
+
+ let selected=
+  possible.find(
+   i=>
+   players.green.tokens[i]!==-1 &&
+   players.green.tokens[i]+diceValue===56
+  );
+
+ if(selected===undefined){
+
+  selected=
+   possible[
+    Math.floor(
+     Math.random()*possible.length
+   )
+  ];
+ }
+
+ setTimeout(()=>{
+
+  moveComputerToken(selected);
+
+ },900);
+}
+
+
+/* =====================================================
+   COMPUTER MOVE
+===================================================== */
+
+function moveComputerToken(index){
+
+ let position=
+  players.green.tokens[index];
+
+ if(position===-1)
+  position=0;
+ else
+  position+=diceValue;
+
+ players.green.tokens[index]=position;
+
+ checkCapture("green",index);
+
+ renderTokens();
+
+ if(checkWin("green")){
+
+  gameOver=true;
+
+  document.getElementById("status")
+   .innerText=
+   "🤖 Computer जीत गया!";
+
+  return;
+ }
+
+ if(diceValue===6){
+
+  document.getElementById("status")
+   .innerText=
+   "Computer को 6 मिला! फिर से चाल।";
+
+  setTimeout(computerRoll,900);
+
+ }else{
+
+  switchToPlayer();
+
+ }
+}
+
+
+/* =====================================================
+   SWITCH TO PLAYER
+===================================================== */
+
+function switchToPlayer(){
+
+ currentPlayer="red";
+
+ document.getElementById("turn")
+  .innerText=
+  "आपकी बारी 🔴";
+
+ document.getElementById("status")
+  .innerText=
+  "Dice Roll करें।";
+
+ document.getElementById("rollButton")
+  .disabled=false;
+
+ renderTokens();
+}
+
+
+/* =====================================================
+   CAPTURE
+===================================================== */
+
+function checkCapture(color,index){
+
+ const position=
+  players[color].tokens[index];
+
+ if(position<0||position>=52)
+  return;
+
+ const globalIndex=
+  (startIndex[color]+position)%52;
+
+ /*
+ Safe cell
+ */
+
+ if(safeCells.includes(globalIndex))
+  return;
+
+ /*
+ Opponent
+ */
+
+ const opponent=
+  color==="red"
+  ?"green"
+  :"red";
+
+ players[opponent].tokens=
+  players[opponent].tokens.map(
+   p=>{
+
+    if(p<0||p>=52)
+     return p;
+
+    const opponentGlobal=
+     (startIndex[opponent]+p)%52;
+
+    if(opponentGlobal===globalIndex)
+     return -1;
+
+    return p;
+   }
+  );
+}
+
+
+/* =====================================================
+   WIN
+===================================================== */
+
+function checkWin(color){
+
+ return players[color].tokens
+  .every(p=>p===56);
+}
+
+
+/* =====================================================
+   DICE DISPLAY
+===================================================== */
+
+function showDice(number){
+
+ const dice=
+  document.getElementById("dice");
+
+ dice.innerHTML="";
+
+ const positions={
+
+  1:[5],
+
+  2:[1,9],
+
+  3:[1,5,9],
+
+  4:[1,3,7,9],
+
+  5:[1,3,5,7,9],
+
+  6:[1,3,4,6,7,9]
+
  };
 
- map[n].forEach(pos=>{
+ positions[number].forEach(pos=>{
 
-  const dot=document.createElement("div");
+  const dot=
+   document.createElement("div");
 
   dot.className="dot";
 
@@ -425,314 +1081,15 @@ function showDice(n){
   dot.style.gridColumn=
    ((pos-1)%3)+1;
 
-  d.appendChild(dot);
+  dice.appendChild(dot);
 
  });
 }
 
 
-/* ROLL */
-
-function rollDice(){
-
- if(gameOver)return;
-
- if(turn!=="red")return;
-
- document.getElementById("rollBtn").disabled=true;
-
- const d=document.getElementById("dice");
-
- d.classList.remove("rolling");
-
- void d.offsetWidth;
-
- d.classList.add("rolling");
-
- dice=Math.floor(Math.random()*6)+1;
-
- document.getElementById("number").innerText=dice;
-
- setTimeout(()=>{
-
-  showDice(dice);
-
-  document.getElementById("status").innerText=
-   dice===6
-   ?"6 आया! लाल गोटी चुनें."
-   :"अपनी चलने वाली गोटी चुनें.";
-
-  highlight();
-
- },700);
-}
-
-
-/* HIGHLIGHT MOVABLE TOKENS */
-
-function highlight(){
-
- document.querySelectorAll(".token.red")
- .forEach(x=>x.classList.remove("selectable"));
-
- tokens.red.forEach((pos,i)=>{
-
-  if(canMove("red",i)){
-
-   const list=
-    document.querySelectorAll(".token.red");
-
-   if(list[i])
-    list[i].classList.add("selectable");
-  }
- });
-}
-
-
-/* CAN MOVE */
-
-function canMove(color,i){
-
- const pos=tokens[color][i];
-
- if(pos===56)return false;
-
- if(pos===-1)
-  return dice===6;
-
- return pos+dice<=56;
-}
-
-
-/* PLAYER SELECT */
-
-function selectToken(i){
-
- if(turn!=="red")return;
-
- if(!canMove("red",i)){
-
-  document.getElementById("status").innerText=
-   "इस गोटी को अभी नहीं चला सकते।";
-
-  return;
- }
-
- moveToken("red",i,dice);
-}
-
-
-/* MOVE */
-
-function moveToken(color,i,steps){
-
- let pos=tokens[color][i];
-
- if(pos===-1)
-  pos=0;
- else
-  pos+=steps;
-
- tokens[color][i]=pos;
-
- capture(color,i);
-
- render();
-
- if(checkWin(color)){
-
-  gameOver=true;
-
-  document.getElementById("status").innerText=
-   color==="red"
-   ?"🏆 आप जीत गए!"
-   :"🤖 Computer जीत गया!";
-
-  return;
- }
-
- /* 6 = EXTRA TURN */
-
- if(steps===6){
-
-  if(color==="red"){
-
-   turn="red";
-
-   document.getElementById("turn").innerText=
-    "You 🔴";
-
-   document.getElementById("status").innerText=
-    "6 आया! फिर से Dice Roll करें.";
-
-   document.getElementById("rollBtn").disabled=false;
-
-  }else{
-
-   setTimeout(computerTurn,800);
-
-  }
-
-  return;
- }
-
- /* COMPUTER */
-
- if(color==="red"){
-
-  turn="green";
-
-  document.getElementById("turn").innerText=
-   "Computer 🟢";
-
-  document.getElementById("status").innerText=
-   "Computer की बारी...";
-
-  setTimeout(computerTurn,1000);
-
- }
-
- /* PLAYER */
-
- else{
-
-  turn="red";
-
-  document.getElementById("turn").innerText=
-   "You 🔴";
-
-  document.getElementById("status").innerText=
-   "आपकी बारी! Dice Roll करें.";
-
-  document.getElementById("rollBtn").disabled=false;
- }
-}
-
-
-/* CAPTURE */
-
-function capture(color,i){
-
- const pos=tokens[color][i];
-
- if(pos<0)return;
-
- const current=
-  (start[color]+pos)%52;
-
- if(safe.includes(current))
-  return;
-
- colors.forEach(other=>{
-
-  if(other===color)return;
-
-  tokens[other].forEach((p,j)=>{
-
-   if(p<0)return;
-
-   const otherPos=
-    (start[other]+p)%52;
-
-   if(otherPos===current){
-
-    tokens[other][j]=-1;
-   }
-
-  });
- });
-}
-
-
-/* WIN */
-
-function checkWin(color){
-
- return tokens[color]
- .every(p=>p===56);
-}
-
-
-/* COMPUTER */
-
-function computerTurn(){
-
- if(gameOver)return;
-
- turn="green";
-
- dice=
-  Math.floor(Math.random()*6)+1;
-
- document.getElementById("number").innerText=dice;
-
- showDice(dice);
-
- document.getElementById("status").innerText=
-  "Computer ने "+dice+" roll किया.";
-
- /* FIND MOVABLE TOKEN */
-
- let possible=[];
-
- tokens.green.forEach((pos,i)=>{
-
-  if(canMove("green",i)){
-   possible.push(i);
-  }
- });
-
- /* NO MOVE */
-
- if(possible.length===0){
-
-  if(dice===6){
-
-   setTimeout(()=>{
-
-    document.getElementById("status").innerText=
-     "Computer को 6 मिला, लेकिन गोटी नहीं चल सकी.";
-
-    setTimeout(computerTurn,700);
-
-   },500);
-
-  }else{
-
-   setTimeout(()=>{
-
-    turn="red";
-
-    document.getElementById("turn").innerText=
-     "You 🔴";
-
-    document.getElementById("status").innerText=
-     "आपकी बारी! Dice Roll करें.";
-
-    document.getElementById("rollBtn").disabled=false;
-
-   },700);
-  }
-
-  return;
- }
-
- /* COMPUTER CHOOSES TOKEN */
-
- const chosen=
-  possible[
-   Math.floor(Math.random()*possible.length)
-  ];
-
- setTimeout(()=>{
-
-  moveToken("green",chosen,dice);
-
- },800);
-}
-
-
-/* START */
+/* =====================================================
+   START GAME
+===================================================== */
 
 createBoard();
 
